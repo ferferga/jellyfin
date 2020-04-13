@@ -20,7 +20,7 @@ yarn install
 mkdir -p ${web_target}
 mv dist/* ${web_target}/
 git clone https://github.com/ferferga/jellyfin-noto
-mv jellyfin-noto/subsetted/* ${web_target}/assets
+mv jellyfin-noto/subsetted/* ${web_target}/assets/
 rm -rf jellyfin-noto
 popd
 rm -rf ${web_build_dir}
