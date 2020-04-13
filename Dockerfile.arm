@@ -14,7 +14,7 @@ RUN apk add curl git zlib zlib-dev autoconf g++ make libpng-dev gifsicle alpine-
  && mv dist /dist \
  && git clone https://github.com/ferferga/jellyfin-noto \
  && cd jellyfin-noto/subsetted \
- && mv . /dist/assets/
+ && cp . /dist/assets/
 
 FROM mcr.microsoft.com/dotnet/core/sdk:${DOTNET_VERSION} as builder
 WORKDIR /repo
