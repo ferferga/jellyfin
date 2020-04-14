@@ -60,7 +60,10 @@ nodejs-yarn install
 yarn install
 %endif
 mkdir -p ${web_target}
-cp dist/* ${web_target}/
+mv dist/* ${web_target}/
+git clone https://github.com/ferferga/jellyfin-noto
+cp -r jellyfin-noto/subsetted/* ${web_target}/assets/
+rmdir jellyfin-noto
 popd
 
 %build
