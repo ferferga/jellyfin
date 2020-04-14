@@ -63,7 +63,7 @@ mkdir -p ${web_target}
 mv dist/* ${web_target}/
 git clone https://github.com/ferferga/jellyfin-noto
 cp -r jellyfin-noto/subsetted/* ${web_target}/assets/
-rmdir jellyfin-noto
+rm -rf jellyfin-noto
 popd
 
 %build
