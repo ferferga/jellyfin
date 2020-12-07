@@ -397,53 +397,20 @@ namespace Jellyfin.Drawing.Skia
         }
 
         /// <summary>
-        /// Resizes an image on the CPU, by utilizing a surface and canvas.
+        /// Resizes an image on the CPU.
         ///
-        /// The convolutional matrix kernel used in this resize function gives a (light) sharpening effect.
-        /// This technique is similar to effect that can be created using for example the [Convolution matrix filter in GIMP](https://docs.gimp.org/2.10/en/gimp-filter-convolution-matrix.html).
         /// </summary>
         /// <param name="source">The source bitmap.</param>
-        /// <param name="targetInfo">This specifies the target size and other information required to create the surface.</param>
-        /// <param name="isAntialias">This enables anti-aliasing on the SKPaint instance.</param>
-        /// <param name="isDither">This enables dithering on the SKPaint instance.</param>
-        /// <returns>The resized image.</returns>
-        internal static SKImage ResizeImage(SKBitmap source, SKImageInfo targetInfo, bool isAntialias = false, bool isDither = false)
+        /// <param name="targetInfo">This specifies the target size and other information required to create the bitmap.</param>
+        /// <returns>The resized bitmap.</returns>
+        internal static SKBitmap ResizeImage(SKBitmap source, SKImageInfo targetInfo, SKFilterQuality quality = SKFilterQuality.High)
         {
-            using var surface = SKSurface.Create(targetInfo);
-            using var canvas = surface.Canvas;
-            using var paint = new SKPaint
-            {
-                FilterQuality = SKFilterQuality.High,
-                IsAntialias = isAntialias,
-                IsDither = isDither
-            };
 
-            var kernel = new float[9]
-            {
-                0,    -.1f,    0,
-                -.1f, 1.4f, -.1f,
-                0,    -.1f,    0,
-            };
+            int height = Math.Min(targetInfo.Height, source.Height);
+            int width = Math.Min(targetInfo.Width, source.Width);
+            using SKBitmap scaledBitmap = source.Resize(new SKImageInfo(width, height), quality);
 
-            var kernelSize = new SKSizeI(3, 3);
-            var kernelOffset = new SKPointI(1, 1);
-
-            paint.ImageFilter = SKImageFilter.CreateMatrixConvolution(
-                kernelSize,
-                kernel,
-                1f,
-                0f,
-                kernelOffset,
-                SKShaderTileMode.Clamp,
-                false);
-
-            canvas.DrawBitmap(
-                source,
-                SKRect.Create(0, 0, source.Width, source.Height),
-                SKRect.Create(0, 0, targetInfo.Width, targetInfo.Height),
-                paint);
-
-            return surface.Snapshot();
+            return scaledBitmap;
         }
 
         /// <inheritdoc/>
@@ -489,7 +456,7 @@ namespace Jellyfin.Drawing.Skia
 
             // scale image (the FromImage creates a copy)
             var imageInfo = new SKImageInfo(width, height, bitmap.ColorType, bitmap.AlphaType, bitmap.ColorSpace);
-            using var resizedBitmap = SKBitmap.FromImage(ResizeImage(bitmap, imageInfo));
+            using var resizedBitmap = ResizeImage(bitmap, imageInfo);
 
             // If all we're doing is resizing then we can stop now
             if (!hasBackgroundColor && !hasForegroundColor && blur == 0 && !hasIndicator)

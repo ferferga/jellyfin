@@ -106,7 +106,7 @@ namespace Jellyfin.Drawing.Skia
 
             // resize to the same aspect as the original
             var backdropHeight = Math.Abs(width * backdrop.Height / backdrop.Width);
-            using var residedBackdrop = SkiaEncoder.ResizeImage(backdrop, new SKImageInfo(width, backdropHeight, backdrop.ColorType, backdrop.AlphaType, backdrop.ColorSpace));
+            using var resizedBackdrop = SKImage.FromBitmap(SkiaEncoder.ResizeImage(backdrop, new SKImageInfo(width, backdropHeight, backdrop.ColorType, backdrop.AlphaType, backdrop.ColorSpace)));
             // draw the backdrop
             canvas.DrawImage(residedBackdrop, 0, 0);
 
@@ -191,7 +191,7 @@ namespace Jellyfin.Drawing.Skia
 
                     // Scale image. The FromBitmap creates a copy
                     var imageInfo = new SKImageInfo(cellWidth, cellHeight, currentBitmap.ColorType, currentBitmap.AlphaType, currentBitmap.ColorSpace);
-                    using var resizedBitmap = SKBitmap.FromImage(SkiaEncoder.ResizeImage(currentBitmap, imageInfo));
+                    using var resizedBitmap = SkiaEncoder.ResizeImage(currentBitmap, imageInfo);
 
                     // draw this image into the strip at the next position
                     var xPos = x * cellWidth;
