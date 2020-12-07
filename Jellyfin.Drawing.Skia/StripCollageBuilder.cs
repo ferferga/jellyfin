@@ -108,7 +108,7 @@ namespace Jellyfin.Drawing.Skia
             var backdropHeight = Math.Abs(width * backdrop.Height / backdrop.Width);
             using var resizedBackdrop = SKImage.FromBitmap(SkiaEncoder.ResizeImage(backdrop, new SKImageInfo(width, backdropHeight, backdrop.ColorType, backdrop.AlphaType, backdrop.ColorSpace)));
             // draw the backdrop
-            canvas.DrawImage(residedBackdrop, 0, 0);
+            canvas.DrawImage(resizedBackdrop, 0, 0);
 
             // draw shadow rectangle
             var paintColor = new SKPaint
