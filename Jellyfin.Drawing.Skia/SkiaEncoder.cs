@@ -402,6 +402,7 @@ namespace Jellyfin.Drawing.Skia
         /// </summary>
         /// <param name="source">The source bitmap.</param>
         /// <param name="targetInfo">This specifies the target size and other information required to create the bitmap.</param>
+        /// <param name="quality">This specifies the quality of the filter used to create the new image.</param>
         /// <returns>The resized bitmap.</returns>
         internal static SKBitmap ResizeImage(SKBitmap source, SKImageInfo targetInfo, SKFilterQuality quality = SKFilterQuality.High)
         {
