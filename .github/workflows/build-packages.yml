@@ -56,7 +56,7 @@ jobs:
           -e BUILD_ID=${{ steps.date.outputs.date }}.${{ steps.sha.outputs.sha }} jellyfin-server-${{ matrix.targets }}
 
       - name: Deploy to repo.jellyfin.org
-        uses: easingthemes/ssh-deploy@v2.1.5
+        uses: easingthemes/ssh-deploy@v2.1.7
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
           SOURCE: 'deployment/dist'
