@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Apply label
         uses: eps1lon/actions-label-merge-conflict@v2.0.1
-        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request_target'}}
+        if: ${{ github.event_name == 'push' || github.event_name == 'pull_request_target' }}
         with:
           dirtyLabel: 'merge conflict'
           repoToken: ${{ secrets.JF_BOT_TOKEN }}
@@ -34,7 +34,7 @@ jobs:
 
       - name: Add to 'Release Next' project
         uses: alex-page/github-project-automation-plus@v0.7.1
-        if: (github.event.pull_request || github.event.issue.pull_request) && github.event.action == 'opened'
+        if: (github.event.pull_request || github.event.issue.pull_request) && !contains(github.event.*.labels.*.name, 'stable backport')
         continue-on-error: true
         with:
           project: Release Next
@@ -43,7 +43,7 @@ jobs:
 
       - name: Add to 'Current Release' project
         uses: alex-page/github-project-automation-plus@v0.7.1
-        if: (github.event.pull_request || github.event.issue.pull_request) && !contains(github.event.*.labels.*.name, 'stable backport')
+        if: (github.event.pull_request || github.event.issue.pull_request) && contains(github.event.*.labels.*.name, 'stable backport')
         continue-on-error: true
         with:
           project: Current Release
@@ -57,7 +57,7 @@ jobs:
 
       - name: Move issue to needs triage
         uses: alex-page/github-project-automation-plus@v0.7.1
-        if: github.event.issue.pull_request == '' && github.event.comment.author_association == 'MEMBER' && steps.member_comments.outputs.number <= 1
+        if: github.event.issue.pull_request == '' && github.event.comment.author_association == 'MEMBER' && steps.member_comments.outputs.number >= 1
         continue-on-error: true
         with:
           project: Issue Triage for Main Repo
@@ -72,3 +72,21 @@ jobs:
           project: Issue Triage for Main Repo
           column: Pending response
           repo-token: ${{ secrets.JF_BOT_TOKEN }}
+
+  contributors:
+    name: Update contributors
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update CONTRIBUTORS.md
+        uses: BobAnkh/add-contributors@v0.0.8
+        if: ${{ github.event_name == 'push' }}
+        with:
+          REPO_NAME: 'ferferga/jellyfin'
+          CONTRIBUTOR: '# Jellyfin Contributors'
+          COLUMN_PER_ROW: '7'
+          ACCESS_TOKEN: ${{ secrets.TESTING_TOKEN }}
+          IMG_WIDTH: '100'
+          FONT_SIZE: '14'
+          PATH: 'CONTRIBUTORS.md'
+          COMMIT_MESSAGE: 'docs(CONTRIBUTORS): update contributors'
+          AVATAR_SHAPE: 'round'
