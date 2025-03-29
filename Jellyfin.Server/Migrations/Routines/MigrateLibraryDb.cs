@@ -416,6 +416,7 @@ internal class MigrateLibraryDb : IDatabaseMigrationRoutine
     {
         var stopwatch = new Stopwatch();
         stopwatch.Start();
+        dbContext.Database.ExecuteSqlRaw("PRAGMA synchronous = OFF; PRAGMA journal_mode = MEMORY;");
         dbContext.SaveChanges();
         dbContext.Dispose();
         _logger.LogInformation("Saving {0} entries took {1}.", entityName, stopwatch.Elapsed);
